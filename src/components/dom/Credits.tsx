@@ -1,44 +1,109 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
 import Image from 'next/image'
 
 interface CreditImage {
     src: string
     alt: string
+    role: string
 }
 
 const credits: CreditImage[] = [
-    { src: '/assets/credits/credit-01.png', alt: 'Credit 1' },
-    // Add more credits as needed
+    { src: '/assets/credits/jinsenparker.png', alt: 'Credit 1', role: 'Director' },
+    { src: '/assets/credits/bobbysocx.png', alt: 'Credit 2', role: 'Music' },
+    { src: '/assets/credits/deepeshbaisla.png', alt: 'Credit 3', role: 'Art' },
+    { src: '/assets/credits/yashikasharma.png', alt: 'Credit 4', role: 'Art' },
+    { src: '/assets/credits/sahilsablania.png', alt: 'Credit 5', role: 'Art' },
+    { src: '/assets/credits/mehulsrivastava.png', alt: 'Credit 6', role: 'Web Direction' },
 ]
 
-export default function Credits() {
+function CreditItem({
+    credit,
+    index,
+    total,
+    scrollYProgress
+}: {
+    credit: CreditImage
+    index: number
+    total: number
+    scrollYProgress: MotionValue<number>
+}) {
+    // Map global scroll to credit index (0 to total)
+    // Extended to 'total' instead of 'total - 1' to give last credit space to exit
+    const step = useTransform(scrollYProgress, [0, 1], [0, total])
+
+    // Each credit slides in from bottom, stays centered, then slides up
+    const slideInStart = index - 0.5
+    const slideInEnd = index
+    const slideOutStart = index + 1
+    const slideOutEnd = index + 1.5
+
+    // Y position: starts below (100vh), centers (0), exits above (-100vh)
+    const y = useTransform(
+        step,
+        [slideInStart, slideInEnd, slideOutStart, slideOutEnd],
+        ['100vh', '0vh', '0vh', '-100vh']
+    )
+
+    // Opacity: fade in as it slides in, fade out as it slides out
+    const opacity = useTransform(
+        step,
+        [slideInStart, slideInEnd, slideOutStart, slideOutEnd],
+        [0, 1, 1, 0]
+    )
+
     return (
-        <div className="relative w-full">
-            {credits.map((credit, i) => (
-                <div
-                    key={credit.src}
-                    className="h-screen w-full flex items-center justify-center snap-start snap-always"
-                >
-                    <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false, margin: "-20%" }}
-                        transition={{ duration: 1.2, ease: "easeOut" }}
-                        className="relative w-full max-w-[70vw] md:max-w-[60vw] lg:max-w-[50vw] px-8"
-                        style={{ mixBlendMode: 'normal' }}
-                    >
-                        <Image
-                            src={credit.src}
-                            alt={credit.alt}
-                            width={1200}
-                            height={400}
-                            className="w-full h-auto drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
-                            priority={i === 0}
-                        />
-                    </motion.div>
+        <motion.div
+            style={{
+                y,
+                opacity,
+            }}
+            className="absolute inset-0 flex items-center justify-center px-8"
+        >
+            <div className="relative w-full max-w-[70vw] md:max-w-[60vw] lg:max-w-[50vw] flex flex-col items-center gap-5">
+                <div className="text-paper text-xl md:text-2xl font-mono tracking-wider uppercase mix-blend-difference">
+                    {credit.role}
                 </div>
-            ))}
+                <Image
+                    src={credit.src}
+                    alt={credit.alt}
+                    width={1200}
+                    height={400}
+                    className="w-full h-auto drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+                    priority={index === 0}
+                />
+            </div>
+        </motion.div>
+    )
+}
+
+export default function Credits() {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ['start start', 'end end'],
+        layoutEffect: false
+    })
+
+    return (
+        // Container height: give each credit ~100vh of scroll space
+        <div
+            ref={containerRef}
+            className="relative w-full"
+            style={{ height: `${(credits.length + 1) * 100}vh` }}
+        >
+            <div className="sticky top-0 h-screen w-full overflow-hidden">
+                {credits.map((credit, i) => (
+                    <CreditItem
+                        key={credit.src}
+                        credit={credit}
+                        index={i}
+                        total={credits.length}
+                        scrollYProgress={scrollYProgress}
+                    />
+                ))}
+            </div>
         </div>
     )
 }

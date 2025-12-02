@@ -3,6 +3,8 @@ import { useRef, useEffect } from 'react'
 import { useFrame, useThree, extend } from '@react-three/fiber'
 import * as THREE from 'three'
 import { shaderMaterial } from '@react-three/drei'
+import { EffectComposer, Bloom, GodRays } from '@react-three/postprocessing'
+import { KernelSize, BlendFunction } from 'postprocessing'
 
 const FooterMaterial = shaderMaterial(
     {
@@ -67,15 +69,17 @@ const COLORS = [
 export default function FooterScene() {
     const { viewport } = useThree()
     const meshRef = useRef<THREE.Mesh>(null)
-    const videoRef = useRef<HTMLVideoElement>(null)
     const tempColor = useRef(new THREE.Color())
-    const mouseX = useRef(0.5) // Default to center
+    const mouse = useRef({ x: 0, y: 0 })
 
     // Global mouse tracking
     useEffect(() => {
         const handleMouseMove = (event: MouseEvent) => {
-            // Normalize X from 0 to 1 based on window width
-            mouseX.current = event.clientX / window.innerWidth
+            // Normalize to -1 to 1
+            mouse.current = {
+                x: (event.clientX / window.innerWidth) * 2 - 1,
+                y: -(event.clientY / window.innerHeight) * 2 + 1
+            }
         }
 
         window.addEventListener('mousemove', handleMouseMove)
@@ -94,10 +98,8 @@ export default function FooterScene() {
         video.playsInline = true
         video.preload = 'auto'
 
-        videoRef.current = video
-
         // Debugging
-        video.addEventListener('error', (e) => {
+        video.addEventListener('error', () => {
             console.error('Footer Video Error:', video.error)
         })
         video.addEventListener('loadeddata', () => {
@@ -135,44 +137,65 @@ export default function FooterScene() {
     }, [])
 
     useFrame(() => {
-        if (meshRef.current?.material) {
+        if (meshRef.current) {
             const mat = meshRef.current.material as any
             if (mat.uTexture) mat.uTexture.needsUpdate = true
 
-            // Use the global mouse X
-            const x = mouseX.current
+            // Dynamic Tint Color
+            // Map mouse X (-1 to 1) to 0-1 for color interpolation
+            const x = (mouse.current.x + 1) / 2
             const clampedX = Math.max(0, Math.min(1, x))
 
-            // Map 0-1 to segments
-            // 5 colors = 4 segments
             const segmentCount = COLORS.length - 1
             const rawIndex = clampedX * segmentCount
             const index = Math.floor(rawIndex)
             const t = rawIndex - index
 
-            // Handle edge case for x=1
             const safeIndex = Math.min(index, segmentCount - 1)
             const safeT = index >= segmentCount ? 1 : t
 
             const c1 = COLORS[safeIndex]
             const c2 = COLORS[safeIndex + 1]
 
-            // Lerp into tempColor to avoid creating new objects
             tempColor.current.copy(c1).lerp(c2, safeT)
-
-            // Apply to material
             mat.uTint.copy(tempColor.current)
         }
     })
 
     return (
-        <mesh ref={meshRef} position={[0, 0, 0]}>
-            <planeGeometry args={[viewport.width, viewport.height]} />
-            <footerMaterial
-                toneMapped={false}
-                uThreshold={0.6}
-                uIntensity={5.0}
-            />
-        </mesh>
+        <>
+            <mesh ref={meshRef} position={[0, 0, 0]}>
+                <planeGeometry args={[viewport.width, viewport.height]} />
+                <footerMaterial
+                    toneMapped={false}
+                    uThreshold={0.6}
+                    uIntensity={5.0}
+                />
+            </mesh>
+
+            <EffectComposer>
+                <Bloom
+                    luminanceThreshold={1}
+                    luminanceSmoothing={0.025}
+                    intensity={0.25}
+                    kernelSize={KernelSize.LARGE}
+                    mipmapBlur={true}
+                />
+
+                <GodRays
+                    sun={meshRef.current}
+                    blendFunction={BlendFunction.SCREEN}
+                    samples={60}
+                    density={0.5}
+                    decay={0.7}
+                    weight={0.3}
+                    exposure={0.9}
+                    clampMax={1}
+                    kernelSize={KernelSize.LARGE}
+                    blur={true}
+                />
+
+            </EffectComposer>
+        </>
     )
 }
