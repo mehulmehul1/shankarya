@@ -9,24 +9,29 @@ export default function FooterScene() {
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
-        // Create video element
         const video = document.createElement('video')
         video.src = '/assets/burning-field.mp4'
-        video.playsInline = true
-        video.muted = true
+        video.crossOrigin = 'anonymous'
         video.loop = true
-        video.crossOrigin = 'Anonymous'
+        video.muted = true
+        video.playsInline = true
+        video.preload = 'auto'
 
-        // Store reference
         videoRef.current = video
 
-        // Create video texture
+        // Debugging
+        video.addEventListener('error', (e) => {
+            console.error('Footer Video Error:', video.error)
+        })
+        video.addEventListener('loadeddata', () => {
+            console.log('Footer Video Loaded')
+        })
+
         const videoTexture = new THREE.VideoTexture(video)
         videoTexture.minFilter = THREE.LinearFilter
         videoTexture.magFilter = THREE.LinearFilter
         videoTexture.format = THREE.RGBFormat
-
-        // Apply texture to mesh
+        videoTexture.colorSpace = THREE.SRGBColorSpace // Fix bluish tint
 
         if (meshRef.current) {
             const material = meshRef.current.material as THREE.MeshBasicMaterial
@@ -34,32 +39,29 @@ export default function FooterScene() {
             material.needsUpdate = true
         }
 
-        // Try to play video
-        video.play().catch(err => {
-            console.log('Video autoplay failed, will play on user interaction:', err)
-            // Add click listener to start video on user interaction
-            const startVideo = () => {
-                video.play().catch(console.error)
-                document.removeEventListener('click', startVideo)
+        // Attempt autoplay
+        video.play().catch((err) => {
+            console.warn('Footer Video Autoplay blocked:', err)
+            // Fallback: Play on first interaction
+            const playOnClick = () => {
+                video.play()
+                document.removeEventListener('click', playOnClick)
             }
-            document.addEventListener('click', startVideo, { once: true })
+            document.addEventListener('click', playOnClick)
         })
 
-        // Cleanup
         return () => {
             video.pause()
             video.src = ''
+            video.remove()
             videoTexture.dispose()
         }
     }, [])
 
-    // Update texture on each frame
     useFrame(() => {
-        if (videoRef.current && meshRef.current) {
-            const material = meshRef.current.material as THREE.MeshBasicMaterial
-            if (material.map) {
-                (material.map as THREE.VideoTexture).needsUpdate = true
-            }
+        if (meshRef.current?.material) {
+            const mat = meshRef.current.material as THREE.MeshBasicMaterial
+            if (mat.map) mat.map.needsUpdate = true
         }
     })
 

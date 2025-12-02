@@ -5,33 +5,27 @@ import { Preload } from '@react-three/drei'
 import HeroVideo from './Hero/HeroVideo'
 import ArchiveTunnel from './Archives/ArchiveTunnel'
 import GifCarousel from './Gallery/GifCarousel'
-import FooterScene from './Footer/FooterScene'
 import CameraRig from './CameraRig'
 
 interface SceneProps {
     showCarousel?: boolean
-    showFooter?: boolean
     scrollProgress?: number
-    isFooter?: boolean  // Distinguish if this is THE footer section
 }
 
 // Separate the content to use hooks like useThree/useFrame if needed in future
 function SceneContent({
     showCarousel,
-    showFooter,
 }: SceneProps) {
     return (
         <>
-            {!showCarousel && !showFooter && (
+            {!showCarousel && (
                 <>
                     <ArchiveTunnel />
                     <HeroVideo />
                 </>
             )}
 
-            {showCarousel && !showFooter && <GifCarousel />}
-
-            {showFooter && <FooterScene isFooter={true} />}
+            {showCarousel && <GifCarousel />}
         </>
     )
 }
@@ -45,7 +39,7 @@ export default function Scene(props: SceneProps) {
             gl={{ alpha: true, antialias: true }}
         >
             <Suspense fallback={null}>
-                <CameraRig active={props.showCarousel && !props.showFooter} />
+                <CameraRig active={props.showCarousel} />
 
                 <ambientLight intensity={0.5} />
 
