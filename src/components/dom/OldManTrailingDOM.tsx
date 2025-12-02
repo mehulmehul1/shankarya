@@ -100,7 +100,7 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
         }
 
         return pos
-    }, [visibleGifCount, windowSize])
+    }, [visibleGifCount, windowSize, GIFS_PER_ROW, TOTAL_ROWS, GIF_WIDTH, GIF_HEIGHT, SPACING_X, SPACING_Y])
 
     // Debug log
     useEffect(() => {
@@ -117,11 +117,39 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
             calculatedPositions: positions.length,
             note: 'Should show 1 GIF per 1% of scroll'
         })
-    }, [scrollProgress, windowSize, positions])
+    }, [scrollProgress, windowSize, positions, GIFS_PER_ROW, TOTAL_ROWS, TOTAL_GIFS, visibleGifCount, GIF_WIDTH, GIF_HEIGHT])
 
     return (
         <div className="absolute inset-0 pointer-events-none z-[10]">
-            {scrollProgress > 0 && scrollProgress < 1 && <OldManTrailingDOM scrollProgress={scrollProgress} />}
+            {positions.map((pos) => (
+                <motion.div
+                    key={pos.id}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{
+                        duration: 0.3,
+                        delay: getStaggerDelay(pos.index),
+                        ease: 'easeOut'
+                    }}
+                    style={{
+                        position: 'fixed',
+                        left: `${pos.x}px`,
+                        top: `${pos.y}px`,
+                        width: `${GIF_WIDTH}px`,
+                        height: `${GIF_HEIGHT}px`,
+                    }}
+                >
+                    <img
+                        src={pos.src}
+                        alt={pos.id}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain'
+                        }}
+                    />
+                </motion.div>
+            ))}
         </div>
     )
 }
