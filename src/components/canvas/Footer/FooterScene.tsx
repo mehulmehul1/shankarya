@@ -50,13 +50,6 @@ const FooterMaterial = shaderMaterial(
 
 extend({ FooterMaterial })
 
-declare global {
-    namespace JSX {
-        interface IntrinsicElements {
-            footerMaterial: any
-        }
-    }
-}
 
 const COLORS = [
     new THREE.Color('#33ff33'), // Lime Green
@@ -166,6 +159,7 @@ export default function FooterScene() {
         <>
             <mesh ref={meshRef} position={[0, 0, 0]}>
                 <planeGeometry args={[viewport.width, viewport.height]} />
+                {/* @ts-expect-error - footerMaterial is registered via extend() but TS doesn't pick up the type */}
                 <footerMaterial
                     toneMapped={false}
                     uThreshold={0.6}
@@ -183,7 +177,7 @@ export default function FooterScene() {
                 />
 
                 <GodRays
-                    sun={meshRef.current}
+                    sun={meshRef as any}
                     blendFunction={BlendFunction.SCREEN}
                     samples={60}
                     density={0.5}

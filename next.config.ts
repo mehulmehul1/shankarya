@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
             "https://framerusercontent.com/",
             "https://ga.jspm.io/",
             "https://jspm.dev/",
+            "https://grainy-gradients.vercel.app/",
         ]
     },
     typescript: {

@@ -141,6 +141,7 @@ export default function GradientBackground({ colors }: GradientBackgroundProps) 
     return (
         <mesh position={[0, 0, -10]}>
             <planeGeometry args={[2, 2]} />
+            {/* @ts-expect-error - gradientMaterial is registered via extend() but TS doesn't pick up the type */}
             <gradientMaterial
                 ref={materialRef}
                 uResolution={resolution}
