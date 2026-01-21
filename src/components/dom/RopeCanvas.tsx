@@ -10,6 +10,15 @@ interface RopeCanvasProps {
     ropeThickness?: number
     gravity?: number
     debug?: boolean
+    damping?: number
+    iterations?: number
+    substeps?: number
+    colliderStroke?: number
+    samplesPer100px?: number
+    maxDisks?: number
+    showCollider?: boolean
+    autoFit?: boolean
+    fitFillPercent?: number
 }
 
 // Configuration for the attached GIFs
@@ -31,7 +40,16 @@ export default function RopeCanvas({
     ropeColor = '#e0e0e0',
     ropeThickness = 6,
     gravity = 0.6,
-    debug = false
+    debug = false,
+    damping = 0.92,
+    iterations = 6,
+    substeps = 1,
+    colliderStroke = 5,
+    samplesPer100px = 14,
+    maxDisks = 1200,
+    showCollider = false,
+    autoFit = true,
+    fitFillPercent = 0.7
 }: RopeCanvasProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -44,9 +62,9 @@ export default function RopeCanvas({
     // Config
     const config = useRef({
         simSteps: 10,
-        iterations: 6,
+        iterations: iterations,
         segmentLength: 4,
-        damping: 0.92,
+        damping: damping,
     })
 
     const mouse = useRef({ x: 0, y: 0, down: false })
@@ -359,7 +377,7 @@ export default function RopeCanvas({
             {GIF_FILES.map((gifFile, i) => (
                 <img
                     key={i}
-                    ref={(el) => (gifsRef.current[i] = el!)}
+                    ref={(el) => { gifsRef.current[i] = el }}
                     src={`/assets/ropegifs/${gifFile}`}
                     alt="archive"
                     className="absolute pointer-events-none select-none border border-white/20 shadow-lg bg-black"
