@@ -90,10 +90,20 @@ function fallbackFromIndex(idx: number): ColorPalette {
  * Extract dominant colors from an image using histogram analysis
  */
 export function extractColors(img: HTMLImageElement, idx: number): ColorPalette {
+    // Check if we're in a browser environment with document support
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return fallbackFromIndex(idx);
+    }
+
     try {
+        // Validate image dimensions
+        if (!img.naturalWidth || !img.naturalHeight || img.naturalWidth === 0 || img.naturalHeight === 0) {
+            return fallbackFromIndex(idx);
+        }
+
         // Downscale image for faster processing
         const MAX = 48;
-        const ratio = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+        const ratio = img.naturalWidth / img.naturalHeight;
         const tw = ratio >= 1 ? MAX : Math.max(16, Math.round(MAX * ratio));
         const th = ratio >= 1 ? Math.max(16, Math.round(MAX / ratio)) : MAX;
 

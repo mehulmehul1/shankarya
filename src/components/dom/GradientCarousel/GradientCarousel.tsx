@@ -53,7 +53,7 @@ export default function GradientCarousel() {
     const isEnteringRef = useRef(true)
     const cardWidthRef = useRef(300)
     const cardHeightRef = useRef(400)
-    const rafIdRef = useRef<number>()
+    const rafIdRef = useRef<number | null>(null)
     const lastTimeRef = useRef(0)
 
     // Layout

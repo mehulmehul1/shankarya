@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useStore } from '@/store/useStore'
@@ -12,16 +12,16 @@ const TrailingImageScene = dynamic(() => import('@/components/canvas/TrailingIma
 const LatchWrapper = dynamic(() => import('@/components/dom/LatchWrapper'), { ssr: false })
 const VideoModal = dynamic(() => import('@/components/dom/VideoModal'), { ssr: false })
 const Footer = dynamic(() => import('@/components/dom/Footer'), { ssr: false })
+const GenerativeMediaGrid = dynamic(() => import('@/components/dom/GenerativeMediaGrid'), { ssr: false })
 
 export default function Home() {
     const loading = useStore((state) => state.loading)
     const containerRef = useRef<HTMLDivElement>(null)
     const archiveRef = useRef<HTMLDivElement>(null)
     const trailingRef = useRef<HTMLDivElement>(null)
-
+    const carouselSectionRef = useRef<HTMLDivElement>(null)
 
     const [vh, setVh] = useState(0)
-    const [showCarousel, setShowCarousel] = useState(false)
 
     // Viewport height calculation
     useEffect(() => {
@@ -32,6 +32,8 @@ export default function Home() {
     }, [])
 
     const { scrollY } = useScroll()
+
+    // This is now handled directly in the carousel component
 
     // --- TRANSITION LOGIC ---
     // Ink Curtain Animation
@@ -45,29 +47,9 @@ export default function Home() {
         if (latest <= vh * 0.8 && hideHero) setHideHero(false)
     })
 
-    // --- CAROUSEL SCROLL STATE ---
-    const [carouselScrollProgress, setCarouselScrollProgress] = useState(0)
+    // This is now handled directly in the components
 
-    // --- CAROUSEL TRIGGER LOGIC ---
-    useMotionValueEvent(scrollY, "change", (latest) => {
-        if (!archiveRef.current) return
-
-        const archiveStart = vh * 2.0
-        const archiveHeight = vh * 8.0
-        const triggerPoint = archiveStart + archiveHeight - vh
-
-        if (latest > triggerPoint && latest < triggerPoint + (vh * 3) && !showCarousel) {
-            setShowCarousel(true)
-        } else if ((latest <= triggerPoint || latest > triggerPoint + (vh * 3)) && showCarousel) {
-            setShowCarousel(false)
-            setCarouselScrollProgress(0)
-        }
-
-        if (latest > triggerPoint && latest < triggerPoint + (vh * 2)) {
-            const carouselProgress = (latest - triggerPoint) / (vh * 2)
-            setCarouselScrollProgress(carouselProgress)
-        }
-    })
+    // --- CAROUSEL TRIGGER LOGIC REMOVED ---
 
     // --- TRAILING IMAGE LOGIC ---
     const [trailingProgress, setTrailingProgress] = useState(0)
@@ -89,9 +71,6 @@ export default function Home() {
         setTrailingProgress(progress)
     })
 
-
-
-
     // --- GATEKEEPER STATE ---
     const [modalOpen, setModalOpen] = useState(false)
     const [siteUnlocked, setSiteUnlocked] = useState(false)
@@ -104,7 +83,7 @@ export default function Home() {
     return (
         <div
             ref={containerRef}
-            // Increased height to accommodate all sections (Hero 1 + Title 1 + Archive 7 + Carousel 2 + Trailing 2.5 + Footer 3 = ~16.5)
+            // Adjusted height after removing fixed carousel (Hero 1 + Title 1 + Archive 7 + Grid 2 + Trailing 2.5 + Footer 3 = ~16.5)
             className="relative w-full min-h-[1650vh] cursor-none bg-void"
         >
             <Cursor />
@@ -141,13 +120,11 @@ export default function Home() {
             </motion.div>
 
             {/* --- BACKGROUND SCENE (Archives / Hero / Footer) --- */}
-            {!showCarousel && (
-                <div className="fixed inset-0 z-0">
-                    {!loading && (
-                        <Scene showCarousel={false} />
-                    )}
-                </div>
-            )}
+            <div className="fixed inset-0 z-0">
+                {!loading && (
+                    <Scene />
+                )}
+            </div>
 
             {/* --- ROPE OVERLAY --- */}
             <div className={`fixed inset-0 z-0 transition-opacity duration-1000 ${hideHero ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
@@ -208,19 +185,18 @@ export default function Home() {
                                 whileInView={{ opacity: 1 }}
                                 className="font-mono text-paper/50 text-[10px] tracking-[0.5em] uppercase"
                             >
-                                â€” Mnemonic Sequence â€”
+                                — Mnemonic Sequence —
                             </motion.p>
                         </div>
                     )}
                 </section>
 
-                {/* 5. CAROUSEL SECTION */}
-                <section className="h-[200vh] w-full">
-                    {showCarousel && (
-                        <div className="sticky top-0 h-screen z-[15] pointer-events-auto">
-                            <Scene showCarousel={true} showFooter={false} scrollProgress={carouselScrollProgress} />
-                        </div>
-                    )}
+                {/* 5. GENERATIVE GRID SECTION */}
+                <section
+                    ref={carouselSectionRef}
+                    className="relative z-[15] pointer-events-auto"
+                >
+                    <GenerativeMediaGrid />
                 </section>
 
                 {/* 6. TRAILING IMAGE SECTION */}

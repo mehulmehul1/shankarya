@@ -16,7 +16,7 @@ interface BackgroundProps {
 
 export default function GradientBackground({ colors }: BackgroundProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const rafRef = useRef<number>()
+    const rafRef = useRef<number | null>(null)
     const lastDrawRef = useRef(0)
     const fastUntilRef = useRef(0)
 

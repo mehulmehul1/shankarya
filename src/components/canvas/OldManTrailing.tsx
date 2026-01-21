@@ -47,6 +47,7 @@ export default function OldManTrailing({ scrollProgress }: OldManTrailingProps) 
         visibleGifCount
     })
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- GIFS_PER_ROW, TOTAL_ROWS are constants
     const positions = useMemo(() => {
         const pos = []
         let gifIndex = 0
