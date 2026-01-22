@@ -5,6 +5,7 @@ import { useStore } from '@/store/useStore'
 import { useScroll, useTransform, motion, useMotionValueEvent } from 'framer-motion'
 import RopeCanvas from '@/components/dom/RopeCanvas'
 import Cursor from '@/components/dom/Cursor'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 // Dynamic Imports
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
@@ -13,6 +14,7 @@ const LatchWrapper = dynamic(() => import('@/components/dom/LatchWrapper'), { ss
 const VideoModal = dynamic(() => import('@/components/dom/VideoModal'), { ssr: false })
 const Footer = dynamic(() => import('@/components/dom/Footer'), { ssr: false })
 const GenerativeMediaGrid = dynamic(() => import('@/components/dom/GenerativeMediaGrid'), { ssr: false })
+const MiniAppUI = dynamic(() => import('@/components/dom/MiniAppUI'), { ssr: false })
 
 export default function Home() {
     const loading = useStore((state) => state.loading)
@@ -88,6 +90,8 @@ export default function Home() {
         >
             <Cursor />
 
+            <MiniAppUI />
+
             <VideoModal
                 isOpen={modalOpen}
                 onClose={() => {
@@ -110,8 +114,8 @@ export default function Home() {
                 <motion.div
                     className="w-[200px] h-[200px] bg-void"
                     style={{
-                        maskImage: 'url(/assets/ink-mask.png)',
-                        WebkitMaskImage: 'url(/assets/ink-mask.png)',
+                        maskImage: `url(${getAssetUrl('/assets/ink-mask.png')})`,
+                        WebkitMaskImage: `url(${getAssetUrl('/assets/ink-mask.png')})`,
                         maskSize: 'contain',
                         maskRepeat: 'no-repeat',
                         scale: maskScale,
