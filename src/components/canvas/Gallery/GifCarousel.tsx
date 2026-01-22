@@ -5,16 +5,17 @@ import { Html } from '@react-three/drei'
 import { extractColors, type ColorPalette } from '@/lib/colorExtractor'
 import GradientBackground from './GradientBackground'
 import { useStore } from '@/store/useStore'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 // --- DATA ---
 const GALLERY_DATA = [
-    { src: '/assets/ropegifs/0004.gif', title: 'SEQUENCE_01', link: 'https://zora.co' },
-    { src: '/assets/ropegifs/gif_5.gif', title: 'SEQUENCE_02', link: 'https://zora.co' },
-    { src: '/assets/ropegifs/looped.gif', title: 'SEQUENCE_03', link: 'https://zora.co' },
-    { src: '/assets/ropegifs/looped_4.gif', title: 'SEQUENCE_04', link: 'https://zora.co' },
-    { src: '/assets/ropegifs/looped_7.gif', title: 'SEQUENCE_05', link: 'https://zora.co' },
-    { src: '/assets/ropegifs/output_6.gif', title: 'SEQUENCE_06', link: 'https://zora.co' },
-    { src: '/assets/ropegifs/output_7.gif', title: 'SEQUENCE_07', link: 'https://zora.co' }
+    { src: getAssetUrl('/assets/ropegifs/0004.gif'), title: 'SEQUENCE_01', link: 'https://zora.co' },
+    { src: getAssetUrl('/assets/ropegifs/gif_5.gif'), title: 'SEQUENCE_02', link: 'https://zora.co' },
+    { src: getAssetUrl('/assets/ropegifs/looped.gif'), title: 'SEQUENCE_03', link: 'https://zora.co' },
+    { src: getAssetUrl('/assets/ropegifs/looped_4.gif'), title: 'SEQUENCE_04', link: 'https://zora.co' },
+    { src: getAssetUrl('/assets/ropegifs/looped_7.gif'), title: 'SEQUENCE_05', link: 'https://zora.co' },
+    { src: getAssetUrl('/assets/ropegifs/output_6.gif'), title: 'SEQUENCE_06', link: 'https://zora.co' },
+    { src: getAssetUrl('/assets/ropegifs/output_7.gif'), title: 'SEQUENCE_07', link: 'https://zora.co' }
 ]
 
 // Physics constants
@@ -73,8 +74,8 @@ export default function GifCarousel() {
                     const h = (i * 37) % 360;
                     const s = 0.65;
                     const c1 = [Math.round(255 * (0.5 - 0.5 * s * Math.cos((h * Math.PI) / 180))),
-                              Math.round(255 * (0.5 - 0.5 * s * Math.cos(((h + 120) * Math.PI) / 180))),
-                              Math.round(255 * (0.5 - 0.5 * s * Math.cos(((h + 240) * Math.PI) / 180)))];
+                    Math.round(255 * (0.5 - 0.5 * s * Math.cos(((h + 120) * Math.PI) / 180))),
+                    Math.round(255 * (0.5 - 0.5 * s * Math.cos(((h + 240) * Math.PI) / 180)))];
                     const c2 = c1.map(c => Math.min(255, c + 30)) as number[];
                     palettes.current[i] = { c1, c2 };
                 });
@@ -95,11 +96,11 @@ export default function GifCarousel() {
                             const h = (i * 37) % 360
                             palettes.current[i] = {
                                 c1: [Math.round(128 + 127 * Math.sin(h)),
-                                     Math.round(128 + 127 * Math.sin(h + 2)),
-                                     Math.round(128 + 127 * Math.sin(h + 4))],
+                                Math.round(128 + 127 * Math.sin(h + 2)),
+                                Math.round(128 + 127 * Math.sin(h + 4))],
                                 c2: [Math.round(128 + 127 * Math.sin(h + 3)),
-                                     Math.round(128 + 127 * Math.sin(h + 5)),
-                                     Math.round(128 + 127 * Math.sin(h + 1))]
+                                Math.round(128 + 127 * Math.sin(h + 5)),
+                                Math.round(128 + 127 * Math.sin(h + 1))]
                             }
                         }
                         resolve()

@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import CarouselCard from './CarouselCard'
 import GradientBackground from './GradientBackground'
 import { extractColors, type ColorPalette } from './colorExtractor'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 import styles from './carousel.module.css'
 
 // Configuration constants
@@ -19,13 +20,13 @@ const GAP = 28
 
 // GIF images from ropegifs folder
 const IMAGES = [
-    '/assets/ropegifs/0004.gif',
-    '/assets/ropegifs/gif_5.gif',
-    '/assets/ropegifs/looped.gif',
-    '/assets/ropegifs/looped_4.gif',
-    '/assets/ropegifs/looped_7.gif',
-    '/assets/ropegifs/output_6.gif',
-    '/assets/ropegifs/output_7.gif'
+    getAssetUrl('/assets/ropegifs/0004.gif'),
+    getAssetUrl('/assets/ropegifs/gif_5.gif'),
+    getAssetUrl('/assets/ropegifs/looped.gif'),
+    getAssetUrl('/assets/ropegifs/looped_4.gif'),
+    getAssetUrl('/assets/ropegifs/looped_7.gif'),
+    getAssetUrl('/assets/ropegifs/output_6.gif'),
+    getAssetUrl('/assets/ropegifs/output_7.gif')
 ]
 
 // Utility: safe modulo

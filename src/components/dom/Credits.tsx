@@ -2,6 +2,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
 import Image from 'next/image'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 interface CreditImage {
     src: string
@@ -10,12 +11,12 @@ interface CreditImage {
 }
 
 const credits: CreditImage[] = [
-    { src: '/assets/credits/jinsenparker.png', alt: 'Credit 1', role: 'Director' },
-    { src: '/assets/credits/bobbysocx.png', alt: 'Credit 2', role: 'Music' },
-    { src: '/assets/credits/deepeshbaisla.png', alt: 'Credit 3', role: 'Art' },
-    { src: '/assets/credits/yashikasharma.png', alt: 'Credit 4', role: 'Art' },
-    { src: '/assets/credits/sahilsablania.png', alt: 'Credit 5', role: 'Art' },
-    { src: '/assets/credits/mehulsrivastava.png', alt: 'Credit 6', role: 'Web Direction' },
+    { src: getAssetUrl('/assets/credits/jinsenparker.png'), alt: 'Credit 1', role: 'Director' },
+    { src: getAssetUrl('/assets/credits/bobbysocx.png'), alt: 'Credit 2', role: 'Music' },
+    { src: getAssetUrl('/assets/credits/deepeshbaisla.png'), alt: 'Credit 3', role: 'Art' },
+    { src: getAssetUrl('/assets/credits/yashikasharma.png'), alt: 'Credit 4', role: 'Art' },
+    { src: getAssetUrl('/assets/credits/sahilsablania.png'), alt: 'Credit 5', role: 'Art' },
+    { src: getAssetUrl('/assets/credits/mehulsrivastava.png'), alt: 'Credit 6', role: 'Web Direction' },
 ]
 
 function CreditItem({

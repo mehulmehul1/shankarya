@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useEffect, useState } from 'react'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 type Pt = { x: number; y: number; px: number; py: number }
 type Disk = { x: number; y: number; r: number }
@@ -378,7 +379,7 @@ export default function RopeCanvas({
                 <img
                     key={i}
                     ref={(el) => { gifsRef.current[i] = el }}
-                    src={`/assets/ropegifs/${gifFile}`}
+                    src={getAssetUrl(`/assets/ropegifs/${gifFile}`)}
                     alt="archive"
                     className="absolute pointer-events-none select-none border border-white/20 shadow-lg bg-black"
                     style={{

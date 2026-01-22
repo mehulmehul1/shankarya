@@ -2,6 +2,7 @@
 import { Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 interface ImprovedTrailingImageProps {
     scrollProgress: number
@@ -25,7 +26,7 @@ export default function ImprovedTrailingImage({ scrollProgress }: ImprovedTraili
     const generateSequence = (startX: number, startY: number, count: number, stepX: number, stepY: number) => {
         return Array.from({ length: count }, (_, i) => ({
             id: `trail-${i}`,
-            src: `/assets/oldman/A/oldman${i}.gif`,
+            src: getAssetUrl(`/assets/oldman/A/oldman${i}.gif`),
             left: startX + (i * stepX),
             top: startY + (i * stepY),
             width: GIF_WIDTH,

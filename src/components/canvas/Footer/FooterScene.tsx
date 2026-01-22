@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { shaderMaterial } from '@react-three/drei'
 import { EffectComposer, Bloom, GodRays } from '@react-three/postprocessing'
 import { KernelSize, BlendFunction } from 'postprocessing'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 const FooterMaterial = shaderMaterial(
     {
@@ -84,7 +85,7 @@ export default function FooterScene() {
 
     useEffect(() => {
         const video = document.createElement('video')
-        video.src = '/assets/burning-field.mp4'
+        video.src = getAssetUrl('burning-field.mp4')
         video.crossOrigin = 'anonymous'
         video.loop = true
         video.muted = true

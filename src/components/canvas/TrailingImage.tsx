@@ -1,6 +1,7 @@
 import { Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useState } from 'react'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 interface TrailingImageProps {
     scrollProgress: number // 0 to 1 representing the progress through the trailing section
@@ -31,7 +32,7 @@ export default function TrailingImage({ scrollProgress }: TrailingImageProps) {
         const y = 0
         return {
             id: `A-${i}`,
-            src: `/assets/oldman/A/oldman${i}.gif`,
+            src: getAssetUrl(`/assets/oldman/A/oldman${i}.gif`),
             style: { right: `${GIF_WIDTH + i * OFFSET_X}px`, top: 0 }, // Using right for easier alignment from right edge? 
             // User said: X = viewport - 420. 
             // If we use left:
@@ -47,7 +48,7 @@ export default function TrailingImage({ scrollProgress }: TrailingImageProps) {
     const sequenceB = Array.from({ length: TOTAL_GIFS_B }).map((_, i) => {
         return {
             id: `B-${i}`,
-            src: `/assets/oldman/B/oldmanR${i}.gif`,
+            src: getAssetUrl(`/assets/oldman/B/oldmanR${i}.gif`),
             left: `${i * OFFSET_X}px`,
             top: `${GIF_HEIGHT}px`
         }

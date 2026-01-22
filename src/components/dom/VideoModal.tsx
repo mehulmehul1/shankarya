@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 interface VideoModalProps {
     isOpen: boolean
@@ -49,7 +50,7 @@ export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
                     >
                         <video
                             ref={videoRef}
-                            src="/assets/film.mp4"
+                            src={getAssetUrl("/assets/film.mp4")}
                             className="w-full h-full object-contain"
                             controls={true}
                             controlsList="nodownload noremoteplayback"
@@ -73,7 +74,7 @@ export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
                             className="group flex items-center gap-3 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all hover:scale-105 active:scale-95"
                         >
                             <img
-                                src="/assets/zoralogo.png"
+                                src={getAssetUrl("/assets/zoralogo.png")}
                                 alt="Zora"
                                 className="w-6 h-6 object-contain opacity-80 group-hover:opacity-100"
                             />

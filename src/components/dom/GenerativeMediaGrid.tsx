@@ -2,18 +2,19 @@
 
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 const MEDIA_ASSETS = [
-    { src: '/assets/ropegifs/0004.gif', title: 'SEQUENCE_01', type: 'gif', span: 'row-span-2' },
-    { src: '/assets/ropegifs/gif_5.gif', title: 'SEQUENCE_02', type: 'gif', span: 'col-span-2' },
-    { src: '/assets/ropegifs/looped.gif', title: 'SEQUENCE_03', type: 'gif', span: '' },
-    { src: '/assets/ropegifs/looped_4.gif', title: 'SEQUENCE_04', type: 'gif', span: 'row-span-2' },
-    { src: '/assets/ropegifs/looped_7.gif', title: 'SEQUENCE_05', type: 'gif', span: '' },
-    { src: '/assets/ropegifs/output_6.gif', title: 'SEQUENCE_06', type: 'gif', span: 'col-span-2' },
-    { src: '/assets/ropegifs/output_7.gif', title: 'SEQUENCE_07', type: 'gif', span: '' },
+    { src: getAssetUrl('/assets/ropegifs/0004.gif'), title: 'SEQUENCE_01', type: 'gif', span: 'row-span-2' },
+    { src: getAssetUrl('/assets/ropegifs/gif_5.gif'), title: 'SEQUENCE_02', type: 'gif', span: 'col-span-2' },
+    { src: getAssetUrl('/assets/ropegifs/looped.gif'), title: 'SEQUENCE_03', type: 'gif', span: '' },
+    { src: getAssetUrl('/assets/ropegifs/looped_4.gif'), title: 'SEQUENCE_04', type: 'gif', span: 'row-span-2' },
+    { src: getAssetUrl('/assets/ropegifs/looped_7.gif'), title: 'SEQUENCE_05', type: 'gif', span: '' },
+    { src: getAssetUrl('/assets/ropegifs/output_6.gif'), title: 'SEQUENCE_06', type: 'gif', span: 'col-span-2' },
+    { src: getAssetUrl('/assets/ropegifs/output_7.gif'), title: 'SEQUENCE_07', type: 'gif', span: '' },
     // Repeat or add more to fill space if needed
-    { src: '/assets/ropegifs/looped_4.gif', title: 'SEQUENCE_08', type: 'gif', span: '' },
-    { src: '/assets/ropegifs/0004.gif', title: 'SEQUENCE_09', type: 'gif', span: 'col-span-1' },
+    { src: getAssetUrl('/assets/ropegifs/looped_4.gif'), title: 'SEQUENCE_08', type: 'gif', span: '' },
+    { src: getAssetUrl('/assets/ropegifs/0004.gif'), title: 'SEQUENCE_09', type: 'gif', span: 'col-span-1' },
 ]
 
 export default function GenerativeMediaGrid() {

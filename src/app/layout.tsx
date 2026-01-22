@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Space_Mono } from "next/font/google";
 import SmoothScroll from "@/components/dom/SmoothScroll";
 import Loader from "@/components/dom/Loader";
+import { getAssetUrl } from "@/lib/getAssetUrl";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -24,13 +25,13 @@ export const metadata: Metadata = {
         title: "SHANKARYA - Kutra Premi",
         description: "A Cinematic WebGPU Experience",
         type: "website",
-        images: ["/assets/77.jpg"],
+        images: [getAssetUrl("/assets/77.jpg")],
     },
     twitter: {
         card: "summary_large_image",
         title: "SHANKARYA - Kutra Premi",
         description: "A Cinematic WebGPU Experience",
-        images: ["/assets/77.jpg"],
+        images: [getAssetUrl("/assets/77.jpg")],
     },
 };
 
@@ -47,7 +48,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${playfair.variable} ${spaceMono.variable}`}>
+        <html lang="en" className={`${playfair.variable} ${spaceMono.variable}`} suppressHydrationWarning>
             <body className="bg-void antialiased selection:bg-signal selection:text-void">
                 <SmoothScroll>
                     <Loader />

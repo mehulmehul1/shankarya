@@ -4,6 +4,7 @@ import { Plane, useVideoTexture } from '@react-three/drei'
 import { useThree, extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from '@react-three/drei'
 import * as THREE from 'three'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 const CCTVMaterial = shaderMaterial(
     {
@@ -55,7 +56,7 @@ export default function HeroVideo() {
     const { viewport } = useThree()
     const materialRef = useRef<any>(null)
 
-    const texture = useVideoTexture('/assets/hero-cctv.mp4', {
+    const texture = useVideoTexture(getAssetUrl('/assets/hero-cctv.mp4'), {
         start: true, muted: true, loop: true, crossOrigin: 'Anonymous'
     })
 

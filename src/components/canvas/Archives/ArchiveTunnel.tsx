@@ -3,6 +3,7 @@ import { useRef, useMemo, useState } from 'react'
 import { useFrame, extend, useThree } from '@react-three/fiber'
 import { useTexture, shaderMaterial } from '@react-three/drei'
 import * as THREE from 'three'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 // -------------------------------------------------------------
 // 1. ROLL-UP SHADER
@@ -278,7 +279,7 @@ export default function ArchiveTunnel() {
                 id: i,
                 pos: [x, y, 0.5] as any,
                 rot: [0, 0, rotZ] as any,
-                url: `/assets/archives/${i + 1}.png`,
+                url: getAssetUrl(`/assets/archives/${i + 1}.png`),
                 isLeft
             }
         })

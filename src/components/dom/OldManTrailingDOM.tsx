@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { getAssetUrl } from '@/lib/getAssetUrl'
 
 interface OldManTrailingDOMProps {
     scrollProgress: number // 0 to 1
@@ -68,7 +69,7 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
                         const gifNumber = col % 13
                         pos.push({
                             id: `A-row${row}-col${col}`,
-                            src: `/assets/oldman/A/oldman${gifNumber}.gif`,
+                            src: getAssetUrl(`/assets/oldman/A/oldman${gifNumber}.gif`),
                             x,
                             y,
                             index: gifIndex // Add index for stagger delay
@@ -88,7 +89,7 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
                         const gifNumber = col % 13
                         pos.push({
                             id: `B-row${row}-col${col}`,
-                            src: `/assets/oldman/B/oldmanR${gifNumber}.gif`,
+                            src: getAssetUrl(`/assets/oldman/B/oldmanR${gifNumber}.gif`),
                             x,
                             y,
                             index: gifIndex // Add index for stagger delay
