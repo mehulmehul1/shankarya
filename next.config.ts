@@ -13,15 +13,6 @@ const nextConfig: NextConfig = {
             "https://grainy-gradients.vercel.app/",
         ]
     },
-    images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'shankarya.s3.eu-north-1.amazonaws.com',
-                pathname: '/assets/**',
-            },
-        ],
-    },
     typescript: {
         ignoreBuildErrors: false,
     },
@@ -42,4 +33,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-

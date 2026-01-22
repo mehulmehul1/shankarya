@@ -1,0 +1,36 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "name": "Shankarya - Kutra Premi",
+    "iconUrl": "/assets/77.jpg",
+    "splashUrl": "/assets/77.jpg",
+    "splashBackgroundColor": "#050505",
+    "homeUrl": "/",
+    "privacyPolicyUrl": "/privacy",
+    "termsOfServiceUrl": "/terms",
+    "developers": [
+      {
+        "name": "Shankarya Team",
+        "url": "https://shankarya.com"
+      }
+    ],
+    "categories": ["gaming", "graphics", "visual-experience"],
+    "keywords": ["webgpu", "3d", "graphics", "gaming", "film", "immersive"],
+    "screenshots": [
+      {
+        "url": "/assets/77.jpg"
+      }
+    ],
+    "smartWallets": [
+      {
+        "allowedNetworks": ["eip155:8453", "eip155:84532"],
+        "supportedStandards": ["eip155", "caip-2"],
+        "enabledSmartWallets": ["coinbase"]
+      }
+    ]
+  }
+}
