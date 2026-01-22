@@ -1,0 +1,31 @@
+# Vercel ignores files exceeding 100MB limit
+# Large videos
+public/assets/burning-field.mp4
+public/assets/film.mp4
+public/assets/hero-cctv.mp4
+
+# Large image
+public/assets/77.jpg
+
+# GIFs (oldman and rope animations - many large files)
+public/assets/oldman/**/*.gif
+public/assets/ropegifs/**/*.gif
+
+# SVG assets (keep all - they're small)
+# public/assets/tree*.svg
+# public/assets/zoralogo.png
+# public/assets/*.svg
+
+# Archive images (keep most, block large ones)
+public/assets/archives/3.png
+public/assets/archives/6.png
+public/assets/archives/7.png
+
+# Gallery images
+public/assets/gallery/Artboard 4@1x_1.jpg
+
+# Ink mask (large PNG)
+public/assets/ink-mask.png
+
+# Note: These assets should be moved to S3/CloudFront CDN
+# See docs/S3_UPLOAD_GUIDE.md for instructions

@@ -37,7 +37,7 @@ export default function Loader() {
             clearInterval(timer)
             clearInterval(animTimer)
         }
-    }, [setLoading])
+    }, [])
 
     return (
         <AnimatePresence>

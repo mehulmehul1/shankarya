@@ -16,9 +16,30 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://shankarya.com'),
     title: "SHANKARYA: Kutra Premi",
-    description: "A Cinematic Experience.",
+    description: "A Cinematic WebGPU Experience for Base and Farcaster.",
+    manifest: "/.well-known/farcaster.json",
+    openGraph: {
+        title: "SHANKARYA - Kutra Premi",
+        description: "A Cinematic WebGPU Experience",
+        type: "website",
+        images: ["/assets/77.jpg"],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "SHANKARYA - Kutra Premi",
+        description: "A Cinematic WebGPU Experience",
+        images: ["/assets/77.jpg"],
+    },
 };
+
+export const viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+}
 
 export default function RootLayout({
     children,
