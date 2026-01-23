@@ -161,14 +161,7 @@ export default function Home() {
                 <section className="h-screen flex flex-col items-center justify-center relative px-4">
                     <div className={`transition-opacity duration-500 flex flex-col items-center w-full ${hideHero ? 'opacity-100' : 'opacity-0'}`}>
 
-                        <div className="mix-blend-difference text-center flex flex-col items-center mb-10 md:mb-20 w-full">
-                            <h1 className="font-serif text-[13vw] md:text-[25vh] text-paper leading-[0.9] tracking-tighter">
-                                SHANKARYA
-                            </h1>
-                            <p className="font-mono text-signal text-sm md:text-3xl mt-2 md:mt-[-2rem] tracking-[0.4em] md:tracking-[0.8em] uppercase ml-0 md:ml-4 text-center">
-                                Kutra Premi
-                            </p>
-                        </div>
+                        <StaticHeroTitle />
 
                         <div className="pointer-events-auto mt-8">
                             <LatchWrapper key={latchKey} onOpen={() => setModalOpen(true)} />
@@ -184,13 +177,7 @@ export default function Home() {
                 >
                     {siteUnlocked && (
                         <div className="text-center sticky top-10 mix-blend-difference z-20">
-                            <motion.p
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                className="font-mono text-paper/50 text-[10px] tracking-[0.5em] uppercase"
-                            >
-                                — Mnemonic Sequence —
-                            </motion.p>
+                            <MnemonicSequenceLabel />
                         </div>
                     )}
                 </section>
@@ -220,3 +207,26 @@ export default function Home() {
         </div>
     )
 }
+
+// --- HOISTED STATIC COMPONENTS ---
+
+const StaticHeroTitle = () => (
+    <div className="mix-blend-difference text-center flex flex-col items-center mb-10 md:mb-20 w-full">
+        <h1 className="font-serif text-[13vw] md:text-[25vh] text-paper leading-[0.9] tracking-tighter">
+            SHANKARYA
+        </h1>
+        <p className="font-mono text-signal text-sm md:text-3xl mt-2 md:mt-[-2rem] tracking-[0.4em] md:tracking-[0.8em] uppercase ml-0 md:ml-4 text-center">
+            Kutra Premi
+        </p>
+    </div>
+)
+
+const MnemonicSequenceLabel = () => (
+    <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="font-mono text-paper/50 text-[10px] tracking-[0.5em] uppercase"
+    >
+        — Mnemonic Sequence —
+    </motion.p>
+)

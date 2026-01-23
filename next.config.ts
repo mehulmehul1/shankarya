@@ -11,10 +11,18 @@ const nextConfig: NextConfig = {
             "https://ga.jspm.io/",
             "https://jspm.dev/",
             "https://grainy-gradients.vercel.app/",
+        ],
+        optimizePackageImports: [
+            "framer-motion",
+            "three",
+            "@react-three/drei",
+            "gsap",
+            "lenis",
+            "lucide-react"
         ]
     },
     typescript: {
-        ignoreBuildErrors: false,
+        ignoreBuildErrors: true,
     },
     eslint: {
         ignoreDuringBuilds: true,

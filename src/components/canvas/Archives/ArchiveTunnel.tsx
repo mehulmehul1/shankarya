@@ -117,11 +117,7 @@ const PaperMaterial = shaderMaterial(
 )
 extend({ PaperMaterial })
 
-declare module '@react-three/fiber' {
-    interface ThreeElements {
-        paperMaterial: any
-    }
-}
+
 
 // -------------------------------------------------------------
 // 2. ARCHIVE ITEM — unroll when entering viewport

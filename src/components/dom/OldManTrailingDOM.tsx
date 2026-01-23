@@ -103,22 +103,7 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
         return pos
     }, [visibleGifCount, windowSize, GIFS_PER_ROW, TOTAL_ROWS, GIF_WIDTH, GIF_HEIGHT, SPACING_X, SPACING_Y])
 
-    // Debug log
-    useEffect(() => {
-        console.log('OldManTrailingDOM Debug:', {
-            scrollProgress: Math.round(scrollProgress * 100),
-            scrollProgressRaw: scrollProgress,
-            windowSize,
-            GIFS_PER_ROW,
-            TOTAL_ROWS,
-            TOTAL_GIFS,
-            visibleGifCount,
-            GIF_WIDTH: Math.round(GIF_WIDTH),
-            GIF_HEIGHT: Math.round(GIF_HEIGHT),
-            calculatedPositions: positions.length,
-            note: 'Should show 1 GIF per 1% of scroll'
-        })
-    }, [scrollProgress, windowSize, positions, GIFS_PER_ROW, TOTAL_ROWS, TOTAL_GIFS, visibleGifCount, GIF_WIDTH, GIF_HEIGHT])
+    // Removal of debug logs to keep production code clean as per best practices
 
     return (
         <div className="absolute inset-0 pointer-events-none z-[10]">
@@ -134,8 +119,7 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
                     }}
                     style={{
                         position: 'fixed',
-                        left: `${pos.x}px`,
-                        top: `${pos.y}px`,
+                        transform: `translate3d(${pos.x}px, ${pos.y}px, 0)`,
                         width: `${GIF_WIDTH}px`,
                         height: `${GIF_HEIGHT}px`,
                     }}

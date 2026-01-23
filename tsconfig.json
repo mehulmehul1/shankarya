@@ -22,6 +22,12 @@
                 "name": "next"
             }
         ],
+        "types": [
+            "node",
+            "react",
+            "react-dom",
+            "@react-three/fiber"
+        ],
         "paths": {
             "@/*": [
                 "./src/*"
@@ -35,6 +41,9 @@
         ".next/types/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "tests",
+        "playwright-report",
+        "playwright.config.*"
     ]
 }

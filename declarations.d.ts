@@ -33,11 +33,19 @@ declare module "*.frag" {
     export default content;
 }
 
-// Custom R3F shader materials
+// Custom R3F elements and materials
+import { ThreeElements } from '@react-three/fiber'
+
+declare module '@react-three/fiber' {
+    interface ThreeElements {
+        heatMaterial: any;
+        paperMaterial: any;
+    }
+}
+
+// Ensure the types are picked up globally
 declare global {
     namespace JSX {
-        interface IntrinsicElements {
-            heatMaterial: any
-        }
+        interface IntrinsicElements extends ThreeElements { }
     }
 }
