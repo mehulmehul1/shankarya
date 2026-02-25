@@ -1,16 +1,11 @@
-import { Metadata, Viewport } from 'next'
-
-export const metadata: Metadata = {
-    title: 'Terms of Service - Shankarya',
-    description: 'Terms of Service for Shankarya WebGPU Experience',
-}
-
-export const viewport: Viewport = {
-    width: 'device-width',
-    initialScale: 1,
-}
+import { useDocumentMeta } from '@/lib/useDocumentMeta'
 
 export default function TermsPage() {
+    useDocumentMeta({
+        title: 'Terms of Service - Shankarya',
+        description: 'Terms of Service for Shankarya WebGPU Experience'
+    })
+
     return (
         <div className="min-h-screen bg-void text-paper p-8 md:p-16">
             <div className="max-w-3xl mx-auto">

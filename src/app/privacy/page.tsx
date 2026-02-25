@@ -1,16 +1,11 @@
-import { Metadata, Viewport } from 'next'
-
-export const metadata: Metadata = {
-    title: 'Privacy Policy - Shankarya',
-    description: 'Privacy Policy for Shankarya WebGPU Experience',
-}
-
-export const viewport: Viewport = {
-    width: 'device-width',
-    initialScale: 1,
-}
+import { useDocumentMeta } from '@/lib/useDocumentMeta'
 
 export default function PrivacyPage() {
+    useDocumentMeta({
+        title: 'Privacy Policy - Shankarya',
+        description: 'Privacy Policy for Shankarya WebGPU Experience'
+    })
+
     return (
         <div className="min-h-screen bg-void text-paper p-8 md:p-16">
             <div className="max-w-3xl mx-auto">

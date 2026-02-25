@@ -15,14 +15,10 @@
         "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "jsx": "preserve",
+        "jsx": "react-jsx",
         "incremental": true,
-        "plugins": [
-            {
-                "name": "next"
-            }
-        ],
         "types": [
+            "vite/client",
             "node",
             "react",
             "react-dom",
@@ -35,15 +31,15 @@
         }
     },
     "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        ".next/types/**/*.ts"
+        "src",
+        "declarations.d.ts",
+        "vite.config.mts"
     ],
     "exclude": [
         "node_modules",
         "tests",
         "playwright-report",
-        "playwright.config.*"
+        "playwright.config.*",
+        "**/*.backup.tsx"
     ]
 }

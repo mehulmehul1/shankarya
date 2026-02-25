@@ -2,7 +2,6 @@
 
 import { Canvas } from '@react-three/fiber'
 import { Suspense, useState, useEffect } from 'react'
-import { Preload } from '@react-three/drei'
 import FooterScene from './FooterScene'
 
 export default function FooterCanvas() {
@@ -17,14 +16,13 @@ export default function FooterCanvas() {
     return (
         <Canvas
             className="absolute top-0 left-0 w-full h-full"
-            dpr={[1, 2]}
+            dpr={[1, 1.5]}
             camera={{ position: [0, 0, 10], fov: 35 }}
-            gl={{ antialias: true, alpha: true }}
+            gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
         >
             <Suspense fallback={null}>
                 <ambientLight intensity={0.5} />
                 <FooterScene />
-                <Preload all />
             </Suspense>
         </Canvas>
     )

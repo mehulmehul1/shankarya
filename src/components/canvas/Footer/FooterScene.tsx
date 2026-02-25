@@ -3,8 +3,8 @@ import { useRef, useEffect } from 'react'
 import { useFrame, useThree, extend } from '@react-three/fiber'
 import * as THREE from 'three'
 import { shaderMaterial } from '@react-three/drei'
-import { EffectComposer, Bloom, GodRays } from '@react-three/postprocessing'
-import { KernelSize, BlendFunction } from 'postprocessing'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { KernelSize } from 'postprocessing'
 import { getAssetUrl } from '@/lib/getAssetUrl'
 
 const FooterMaterial = shaderMaterial(
@@ -65,6 +65,8 @@ export default function FooterScene() {
     const meshRef = useRef<THREE.Mesh>(null)
     const tempColor = useRef(new THREE.Color())
     const mouse = useRef({ x: 0, y: 0 })
+    const videoRef = useRef<HTMLVideoElement | null>(null)
+    const videoErroredRef = useRef(false)
 
     // Global mouse tracking
     useEffect(() => {
@@ -85,25 +87,34 @@ export default function FooterScene() {
 
     useEffect(() => {
         const video = document.createElement('video')
-        video.src = getAssetUrl('burning-field.mp4')
+        videoRef.current = video
+
+        video.src = getAssetUrl('/assets/burning-field.mp4')
         video.crossOrigin = 'anonymous'
         video.loop = true
         video.muted = true
         video.playsInline = true
         video.preload = 'auto'
 
-        // Debugging
-        video.addEventListener('error', () => {
-            console.error('Footer Video Error:', video.error)
-        })
-        video.addEventListener('loadeddata', () => {
+        const handleVideoError = () => {
+            if (video.src) {
+                videoErroredRef.current = true
+                console.error('Footer Video Error:', video.error)
+            }
+        }
+
+        const handleVideoLoaded = () => {
             console.log('Footer Video Loaded')
-        })
+        }
+
+        video.addEventListener('error', handleVideoError)
+        video.addEventListener('loadeddata', handleVideoLoaded)
 
         const videoTexture = new THREE.VideoTexture(video)
         videoTexture.minFilter = THREE.LinearFilter
         videoTexture.magFilter = THREE.LinearFilter
         videoTexture.colorSpace = THREE.SRGBColorSpace
+        videoTexture.generateMipmaps = false
 
         if (meshRef.current) {
             const material = meshRef.current.material as any
@@ -112,19 +123,25 @@ export default function FooterScene() {
         }
 
         // Attempt autoplay
-        video.play().catch((err) => {
+        const playPromise = video.play()
+        playPromise.catch((err) => {
             console.warn('Footer Video Autoplay blocked:', err)
             // Fallback: Play on first interaction
             const playOnClick = () => {
-                video.play()
+                void video.play()
                 document.removeEventListener('click', playOnClick)
             }
             document.addEventListener('click', playOnClick)
         })
 
         return () => {
+            video.removeEventListener('error', handleVideoError)
+            video.removeEventListener('loadeddata', handleVideoLoaded)
             video.pause()
-            video.src = ''
+            video.removeAttribute('src')
+            video.load()
+            videoRef.current = null
+            videoErroredRef.current = false
             video.remove()
             videoTexture.dispose()
         }
@@ -133,7 +150,15 @@ export default function FooterScene() {
     useFrame(() => {
         if (meshRef.current) {
             const mat = meshRef.current.material as any
-            if (mat.uTexture) mat.uTexture.needsUpdate = true
+            const video = videoRef.current
+            if (
+                !videoErroredRef.current &&
+                mat.uTexture &&
+                video &&
+                video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
+            ) {
+                mat.uTexture.needsUpdate = true
+            }
 
             // Dynamic Tint Color
             // Map mouse X (-1 to 1) to 0-1 for color interpolation
@@ -172,24 +197,10 @@ export default function FooterScene() {
                 <Bloom
                     luminanceThreshold={1}
                     luminanceSmoothing={0.025}
-                    intensity={0.25}
+                    intensity={0.2}
                     kernelSize={KernelSize.LARGE}
-                    mipmapBlur={true}
+                    mipmapBlur={false}
                 />
-
-                <GodRays
-                    sun={meshRef as any}
-                    blendFunction={BlendFunction.SCREEN}
-                    samples={60}
-                    density={0.5}
-                    decay={0.7}
-                    weight={0.3}
-                    exposure={0.9}
-                    clampMax={1}
-                    kernelSize={KernelSize.LARGE}
-                    blur={true}
-                />
-
             </EffectComposer>
         </>
     )

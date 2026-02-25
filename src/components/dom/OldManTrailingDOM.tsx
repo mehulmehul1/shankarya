@@ -40,7 +40,9 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
     const TOTAL_GIFS = TOTAL_ROWS * GIFS_PER_ROW
 
     // Show more GIFs per scroll for smoother feel - 1 per 0.5% of scroll
-    const visibleGifCount = Math.min(Math.floor(scrollProgress * 200), TOTAL_GIFS)
+    const visibleGifCount = scrollProgress <= 0
+        ? 0
+        : Math.min(Math.max(1, Math.floor(scrollProgress * 200)), TOTAL_GIFS)
 
     // Calculate stagger delay for each GIF
     const getStaggerDelay = (index: number) => {
@@ -119,14 +121,19 @@ export default function OldManTrailingDOM({ scrollProgress }: OldManTrailingDOMP
                     }}
                     style={{
                         position: 'fixed',
-                        transform: `translate3d(${pos.x}px, ${pos.y}px, 0)`,
+                        left: `${pos.x}px`,
+                        top: `${pos.y}px`,
                         width: `${GIF_WIDTH}px`,
                         height: `${GIF_HEIGHT}px`,
+                        zIndex: 30,
                     }}
                 >
                     <img
                         src={pos.src}
                         alt={pos.id}
+                        loading="eager"
+                        decoding="async"
+                        draggable={false}
                         style={{
                             width: '100%',
                             height: '100%',

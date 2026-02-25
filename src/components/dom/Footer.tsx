@@ -1,15 +1,17 @@
 'use client'
-import dynamic from 'next/dynamic'
+import { lazy, Suspense } from 'react'
 import Credits from './Credits'
 
-const FooterCanvas = dynamic(() => import('@/components/canvas/Footer/FooterCanvas'), { ssr: false })
+const FooterCanvas = lazy(() => import('@/components/canvas/Footer/FooterCanvas'))
 
 export default function Footer() {
     return (
         <section className="relative w-full">
             {/* Sticky Background: Stays fixed while we scroll through the container */}
             <div className="sticky top-0 h-screen w-full overflow-hidden -z-20">
-                <FooterCanvas />
+                <Suspense fallback={null}>
+                    <FooterCanvas />
+                </Suspense>
             </div>
 
             {/* Scrolling Content: Overlays the sticky background */}

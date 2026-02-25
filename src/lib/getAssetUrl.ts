@@ -3,7 +3,10 @@
  * Returns S3 CDN URL in all environments (dev and production)
  */
 
-const ASSET_BASE_URL = process.env.NEXT_PUBLIC_ASSET_BASE_URL || ''
+const ASSET_BASE_URL =
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ASSET_BASE_URL) ||
+    (typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_ASSET_BASE_URL : '') ||
+    ''
 
 /**
  * Get asset URL

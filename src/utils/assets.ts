@@ -1,4 +1,7 @@
-const ASSET_BASE_URL = process.env.NEXT_PUBLIC_ASSET_BASE_URL || '';
+const ASSET_BASE_URL =
+    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ASSET_BASE_URL) ||
+    (typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_ASSET_BASE_URL : '') ||
+    '';
 
 /**
  * Resolves a local asset path to its S3 counterpart.

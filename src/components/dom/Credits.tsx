@@ -1,7 +1,7 @@
 'use client'
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
-import Image from 'next/image'
+// Using plain img instead of next/image to avoid S3 hostname config issues
 import { getAssetUrl } from '@/lib/getAssetUrl'
 
 interface CreditImage {
@@ -66,13 +66,14 @@ function CreditItem({
                 <div className="text-paper text-xl md:text-2xl font-mono tracking-wider uppercase mix-blend-difference">
                     {credit.role}
                 </div>
-                <Image
+                <img
                     src={credit.src}
                     alt={credit.alt}
                     width={1200}
                     height={400}
                     className="w-full h-auto drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
-                    priority={index === 0}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
                 />
             </div>
         </motion.div>

@@ -1,22 +1,26 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import dynamic from 'next/dynamic'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { useStore } from '@/store/useStore'
 import { useScroll, useTransform, motion, useMotionValueEvent } from 'framer-motion'
 import RopeCanvas from '@/components/dom/RopeCanvas'
 import Cursor from '@/components/dom/Cursor'
 import { getAssetUrl } from '@/lib/getAssetUrl'
+import { useDocumentMeta } from '@/lib/useDocumentMeta'
 
-// Dynamic Imports
-const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
-const TrailingImageScene = dynamic(() => import('@/components/canvas/TrailingImageScene'), { ssr: false })
-const LatchWrapper = dynamic(() => import('@/components/dom/LatchWrapper'), { ssr: false })
-const VideoModal = dynamic(() => import('@/components/dom/VideoModal'), { ssr: false })
-const Footer = dynamic(() => import('@/components/dom/Footer'), { ssr: false })
-const GenerativeMediaGrid = dynamic(() => import('@/components/dom/GenerativeMediaGrid'), { ssr: false })
-const MiniAppUI = dynamic(() => import('@/components/dom/MiniAppUI'), { ssr: false })
+const Scene = lazy(() => import('@/components/canvas/Scene'))
+const TrailingImageScene = lazy(() => import('@/components/canvas/TrailingImageScene'))
+const LatchWrapper = lazy(() => import('@/components/dom/LatchWrapper'))
+const VideoModal = lazy(() => import('@/components/dom/VideoModal'))
+const Footer = lazy(() => import('@/components/dom/Footer'))
+const GenerativeMediaGrid = lazy(() => import('@/components/dom/GenerativeMediaGrid'))
+const MiniAppUI = lazy(() => import('@/components/dom/MiniAppUI'))
 
 export default function Home() {
+    useDocumentMeta({
+        title: 'SHANKARYA: Kutra Premi',
+        description: 'A Cinematic WebGPU Experience for Base and Farcaster.'
+    })
+
     const loading = useStore((state) => state.loading)
     const containerRef = useRef<HTMLDivElement>(null)
     const archiveRef = useRef<HTMLDivElement>(null)
@@ -25,7 +29,6 @@ export default function Home() {
 
     const [vh, setVh] = useState(0)
 
-    // Viewport height calculation
     useEffect(() => {
         const update = () => setVh(window.innerHeight)
         update()
@@ -35,35 +38,24 @@ export default function Home() {
 
     const { scrollY } = useScroll()
 
-    // This is now handled directly in the carousel component
-
-    // --- TRANSITION LOGIC ---
-    // Ink Curtain Animation
     const maskScale = useTransform(scrollY, [vh * 0.2, vh * 1.2], [0, 80])
     const maskOpacity = useTransform(scrollY, [0, vh * 0.2, vh * 2.5, vh * 3.5], [0, 1, 1, 0])
 
-    // Hide Hero Elements logic
     const [hideHero, setHideHero] = useState(false)
-    useMotionValueEvent(scrollY, "change", (latest) => {
+    useMotionValueEvent(scrollY, 'change', (latest) => {
         if (latest > vh * 0.8 && !hideHero) setHideHero(true)
         if (latest <= vh * 0.8 && hideHero) setHideHero(false)
     })
 
-    // This is now handled directly in the components
-
-    // --- CAROUSEL TRIGGER LOGIC REMOVED ---
-
-    // --- TRAILING IMAGE LOGIC ---
     const [trailingProgress, setTrailingProgress] = useState(0)
 
-    useMotionValueEvent(scrollY, "change", (latest) => {
+    useMotionValueEvent(scrollY, 'change', (latest) => {
         if (!trailingRef.current) return
 
         const element = trailingRef.current
         const start = element.offsetTop
         const height = element.offsetHeight
 
-        // Pin images while scrolling
         const rangeStart = start
         const rangeEnd = start + height - vh
 
@@ -73,7 +65,6 @@ export default function Home() {
         setTrailingProgress(progress)
     })
 
-    // --- GATEKEEPER STATE ---
     const [modalOpen, setModalOpen] = useState(false)
     const [siteUnlocked, setSiteUnlocked] = useState(false)
     const [latchKey, setLatchKey] = useState(0)
@@ -85,28 +76,30 @@ export default function Home() {
     return (
         <div
             ref={containerRef}
-            // Adjusted height after removing fixed carousel (Hero 1 + Title 1 + Archive 7 + Grid 2 + Trailing 2.5 + Footer 3 = ~16.5)
             className="relative w-full min-h-[1650vh] cursor-none bg-void"
         >
             <Cursor />
 
-            <MiniAppUI />
+            <Suspense fallback={null}>
+                <MiniAppUI />
+            </Suspense>
 
-            <VideoModal
-                isOpen={modalOpen}
-                onClose={() => {
-                    setModalOpen(false)
-                    setSiteUnlocked(true)
-                    setLatchKey(prev => prev + 1)
-                    if (!siteUnlocked) {
-                        setTimeout(() => {
-                            window.scrollTo({ top: window.innerHeight * 2.5, behavior: 'smooth' })
-                        }, 100)
-                    }
-                }}
-            />
+            <Suspense fallback={null}>
+                <VideoModal
+                    isOpen={modalOpen}
+                    onClose={() => {
+                        setModalOpen(false)
+                        setSiteUnlocked(true)
+                        setLatchKey(prev => prev + 1)
+                        if (!siteUnlocked) {
+                            setTimeout(() => {
+                                window.scrollTo({ top: window.innerHeight * 2.5, behavior: 'smooth' })
+                            }, 100)
+                        }
+                    }}
+                />
+            </Suspense>
 
-            {/* --- INK CURTAIN TRANSITION --- */}
             <motion.div
                 className="fixed inset-0 z-[5] pointer-events-none flex items-center justify-center overflow-hidden"
                 style={{ opacity: maskOpacity }}
@@ -123,14 +116,14 @@ export default function Home() {
                 />
             </motion.div>
 
-            {/* --- BACKGROUND SCENE (Archives / Hero / Footer) --- */}
             <div className="fixed inset-0 z-0">
                 {!loading && (
-                    <Scene />
+                    <Suspense fallback={null}>
+                        <Scene />
+                    </Suspense>
                 )}
             </div>
 
-            {/* --- ROPE OVERLAY --- */}
             <div className={`fixed inset-0 z-0 transition-opacity duration-1000 ${hideHero ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 {!loading && (
                     <RopeCanvas
@@ -151,26 +144,21 @@ export default function Home() {
                 )}
             </div>
 
-            {/* --- SCROLLABLE DOM CONTENT --- */}
             <div className="relative z-10 w-full pointer-events-none">
-
-                {/* 1. HERO SPACER */}
                 <section className="h-screen w-full"></section>
 
-                {/* 2. TITLE + LATCH */}
                 <section className="h-screen flex flex-col items-center justify-center relative px-4">
                     <div className={`transition-opacity duration-500 flex flex-col items-center w-full ${hideHero ? 'opacity-100' : 'opacity-0'}`}>
-
                         <StaticHeroTitle />
 
                         <div className="pointer-events-auto mt-8">
-                            <LatchWrapper key={latchKey} onOpen={() => setModalOpen(true)} />
+                            <Suspense fallback={null}>
+                                <LatchWrapper key={latchKey} onOpen={() => setModalOpen(true)} />
+                            </Suspense>
                         </div>
-
                     </div>
                 </section>
 
-                {/* 3. ARCHIVE SCROLL ZONE */}
                 <section
                     ref={archiveRef}
                     className="h-[700vh] w-full flex items-start justify-center pt-20"
@@ -182,33 +170,34 @@ export default function Home() {
                     )}
                 </section>
 
-                {/* 5. GENERATIVE GRID SECTION */}
                 <section
                     ref={carouselSectionRef}
                     className="relative z-[15] pointer-events-auto"
                 >
-                    <GenerativeMediaGrid />
+                    <Suspense fallback={null}>
+                        <GenerativeMediaGrid />
+                    </Suspense>
                 </section>
 
-                {/* 6. TRAILING IMAGE SECTION */}
                 <section ref={trailingRef} className="h-[250vh] w-full relative">
                     <div className={`${trailingProgress < 0.95 ? 'sticky top-0' : ''} h-screen z-[15] pointer-events-auto transition-all duration-500 ${trailingProgress >= 0.95 ? 'opacity-0' : ''}`}>
-                        {!loading && <TrailingImageScene scrollProgress={trailingProgress} />}
+                        {!loading && (
+                            <Suspense fallback={null}>
+                                <TrailingImageScene scrollProgress={trailingProgress} />
+                            </Suspense>
+                        )}
                     </div>
                 </section>
 
-                {/* 7. FOOTER SECTION */}
                 <div className="pointer-events-auto relative z-[20]">
-                    <Footer />
+                    <Suspense fallback={null}>
+                        <Footer />
+                    </Suspense>
                 </div>
-
-
             </div>
         </div>
     )
 }
-
-// --- HOISTED STATIC COMPONENTS ---
 
 const StaticHeroTitle = () => (
     <div className="mix-blend-difference text-center flex flex-col items-center mb-10 md:mb-20 w-full">
@@ -227,6 +216,6 @@ const MnemonicSequenceLabel = () => (
         whileInView={{ opacity: 1 }}
         className="font-mono text-paper/50 text-[10px] tracking-[0.5em] uppercase"
     >
-        — Mnemonic Sequence —
+        --- Mnemonic Sequence ---
     </motion.p>
 )
