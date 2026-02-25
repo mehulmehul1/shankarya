@@ -77,11 +77,18 @@ export default function RopeCanvas({
         async function load() {
             try {
                 if (!canvasRef.current) return
-                const res = await fetch(svgPath)
+                const resolvedSvgPath = getAssetUrl(svgPath)
+                const res = await fetch(resolvedSvgPath)
+                if (!res.ok) {
+                    throw new Error(`Failed to fetch SVG (${res.status}) from ${resolvedSvgPath}`)
+                }
                 const text = await res.text()
                 const parser = new DOMParser()
                 const doc = parser.parseFromString(text, 'image/svg+xml')
                 const svgPaths = Array.from(doc.querySelectorAll('path'))
+                if (svgPaths.length === 0) {
+                    throw new Error(`SVG loaded but no <path> nodes found in ${resolvedSvgPath}`)
+                }
 
                 const pathStrings = svgPaths.map(p => p.getAttribute('d') || '')
                 // @ts-ignore
