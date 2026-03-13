@@ -69,6 +69,12 @@ export default function RopeCanvas({
     })
 
     const mouse = useRef({ x: 0, y: 0, down: false })
+    const touchState = useRef({
+        active: false,
+        startX: 0,
+        startY: 0,
+        isDraggingRope: false
+    })
     const [dimensions, setDimensions] = useState({ w: 0, h: 0 })
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -194,6 +200,42 @@ export default function RopeCanvas({
     }, [isLoaded])
 
 
+    // Helper: Calculate distance from point to the nearest rope segment
+    const distanceToRope = (x: number, y: number): number => {
+        const pts = ptsRef.current
+        if (pts.length < 2) return Infinity
+
+        let minDist = Infinity
+        for (let i = 0; i < pts.length - 1; i++) {
+            const a = pts[i]
+            const b = pts[i + 1]
+
+            // Distance from point to line segment
+            const px = b.x - a.x
+            const py = b.y - a.y
+            const norm = px * px + py * py
+            const u = ((x - a.x) * px + (y - a.y) * py) / (norm || 1)
+
+            let closestX, closestY
+            if (u < 0) {
+                closestX = a.x
+                closestY = a.y
+            } else if (u > 1) {
+                closestX = b.x
+                closestY = b.y
+            } else {
+                closestX = a.x + u * px
+                closestY = a.y + u * py
+            }
+
+            const dx = x - closestX
+            const dy = y - closestY
+            const dist = Math.sqrt(dx * dx + dy * dy)
+            minDist = Math.min(minDist, dist)
+        }
+        return minDist
+    }
+
     // 3. Physics & Render Loop
     useEffect(() => {
         if (!dimensions.w) return
@@ -239,7 +281,7 @@ export default function RopeCanvas({
                         if (p.y > h) { p.y = h; p.py = p.y; }
                     }
 
-                    if (mouse.current.down) {
+                    if (mouse.current.down && touchState.current.isDraggingRope) {
                         pts[0].x = mouse.current.x
                         pts[0].y = mouse.current.y
                         pts[0].px = pts[0].x; pts[0].py = pts[0].y
@@ -255,7 +297,7 @@ export default function RopeCanvas({
                             if (dist > 0.01) {
                                 const offX = (dx / dist) * diff * 0.5
                                 const offY = (dy / dist) * diff * 0.5
-                                if (i === 0 && mouse.current.down) {
+                                if (i === 0 && mouse.current.down && touchState.current.isDraggingRope) {
                                     b.x -= offX * 2; b.y -= offY * 2
                                 } else {
                                     a.x += offX; a.y += offY; b.x -= offX; b.y -= offY
@@ -362,22 +404,75 @@ export default function RopeCanvas({
         return () => cancelAnimationFrame(rafId)
     }, [dimensions, debug, gravity, ropeColor, ropeThickness])
 
-    const onMove = (e: React.PointerEvent) => {
+    // Check if input should capture rope (for both mouse and touch)
+    const shouldCaptureRope = (clientX: number, clientY: number): boolean => {
         const rect = containerRef.current?.getBoundingClientRect()
-        if (rect) {
-            mouse.current.x = e.clientX - rect.left
-            mouse.current.y = e.clientY - rect.top
+        if (!rect) return false
+
+        const x = clientX - rect.left
+        const y = clientY - rect.top
+
+        // On touch devices, use distance check. On desktop, always allow.
+        const isTouch = 'ontouchstart' in window || (navigator as any).maxTouchPoints > 0
+
+        if (!isTouch) return true // Desktop: always capture
+
+        // Mobile: only capture if touching near the rope
+        const dist = distanceToRope(x, y)
+        const ropeInteractionRadius = 40 // pixels - easier to grab than visual width
+        return dist < ropeInteractionRadius
+    }
+
+    const handlePointerDown = (e: React.PointerEvent) => {
+        const rect = containerRef.current?.getBoundingClientRect()
+        if (!rect) return
+
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+
+        touchState.current.startX = e.clientX
+        touchState.current.startY = e.clientY
+        touchState.current.active = true
+
+        if (shouldCaptureRope(e.clientX, e.clientY)) {
+            touchState.current.isDraggingRope = true
+            mouse.current.x = x
+            mouse.current.y = y
+            mouse.current.down = true
+            // Prevent scroll when actually grabbing the rope on mobile
+            e.preventDefault()
         }
+    }
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (!touchState.current.active) return
+
+        if (touchState.current.isDraggingRope) {
+            const rect = containerRef.current?.getBoundingClientRect()
+            if (rect) {
+                mouse.current.x = e.clientX - rect.left
+                mouse.current.y = e.clientY - rect.top
+            }
+            // Prevent scroll while dragging rope on mobile
+            e.preventDefault()
+        }
+    }
+
+    const handlePointerUp = () => {
+        touchState.current.active = false
+        touchState.current.isDraggingRope = false
+        mouse.current.down = false
     }
 
     return (
         <div
             ref={containerRef}
-            className="absolute inset-0 w-full h-full touch-none z-20 overflow-hidden"
-            onPointerDown={(e) => { onMove(e); mouse.current.down = true }}
-            onPointerMove={onMove}
-            onPointerUp={() => mouse.current.down = false}
-            onPointerLeave={() => mouse.current.down = false}
+            className="absolute inset-0 w-full h-full z-20 overflow-hidden"
+            style={{ touchAction: 'pan-y' }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
         >
             <canvas ref={canvasRef} className="block w-full h-full" />
 
