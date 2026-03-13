@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  VITE_ASSET_BASE_URL = "https://shankarya.s3.eu-north-1.amazonaws.com"
+  VITE_ASSET_BASE_URL = "https://shankarya-assets-2025.s3.us-east-1.amazonaws.com"
 
 [[redirects]]
   from = "/*"
