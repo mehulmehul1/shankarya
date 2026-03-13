@@ -432,9 +432,9 @@ export default function RopeCanvas({
 
         touchState.current.startX = e.clientX
         touchState.current.startY = e.clientY
-        touchState.current.active = true
 
         if (shouldCaptureRope(e.clientX, e.clientY)) {
+            touchState.current.active = true
             touchState.current.isDraggingRope = true
             mouse.current.x = x
             mouse.current.y = y
