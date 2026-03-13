@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_ASSET_BASE_URL = "https://shankarya.s3.eu-north-1.amazonaws.com"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

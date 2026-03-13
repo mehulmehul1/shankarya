@@ -36,8 +36,8 @@ export function getAssetUrl(path: string): string {
     if (ASSET_BASE_URL) {
         // Ensure base URL doesn't end with slash
         const base = ASSET_BASE_URL.replace(/\/+$/, '')
-        // S3 has assets/assets/... (double assets folder structure)
-        return `${base}/assets/assets/${cleanPath}`
+        // S3 path: assets/...
+        return `${base}/assets/${cleanPath}`
     }
 
     // Fallback: use local path

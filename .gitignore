@@ -13,7 +13,6 @@
 /.next/
 /out/
 /public/assets/
-!/public/assets/tree2.svg
 
 # production
 /build
@@ -66,3 +65,6 @@ package-lock.json
 playwright-report/
 playwright.config.ts
 tests/
+
+# Local Netlify folder
+.netlify
