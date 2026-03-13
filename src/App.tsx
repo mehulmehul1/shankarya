@@ -4,8 +4,6 @@ import HomePage from '@/app/page'
 import PrivacyPage from '@/app/privacy/page'
 import TermsPage from '@/app/terms/page'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
-import { sdk } from '@farcaster/miniapp-sdk';
-import { useEffect } from 'react';
 
 function NotFoundPage() {
     useDocumentMeta({
@@ -29,11 +27,6 @@ function NotFoundPage() {
 }
 
 export default function App() {
-
-    useEffect(() => {
-        sdk.actions.ready();
-    }, []);
-
     return (
         <BrowserRouter>
             <RootLayout>
