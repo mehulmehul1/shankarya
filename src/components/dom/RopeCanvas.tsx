@@ -71,6 +71,7 @@ export default function RopeCanvas({
     const mouse = useRef({ x: 0, y: 0, down: false })
     const [dimensions, setDimensions] = useState({ w: 0, h: 0 })
     const [isLoaded, setIsLoaded] = useState(false)
+    const [touchCount, setTouchCount] = useState(0)
 
     // 1. Load SVG
     useEffect(() => {
@@ -370,11 +371,32 @@ export default function RopeCanvas({
         }
     }
 
+    // Touch handlers for multi-touch detection (two-finger scroll)
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchCount(e.touches.length)
+    }
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchCount(e.touches.length)
+    }
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        setTouchCount(e.touches.length)
+    }
+
     return (
         <div
             ref={containerRef}
-            className="absolute inset-0 w-full h-full touch-none z-20 overflow-hidden"
-            onPointerDown={(e) => { onMove(e); mouse.current.down = true }}
+            className={`absolute inset-0 w-full h-full z-20 overflow-hidden ${touchCount < 2 ? 'touch-none' : ''}`}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onPointerDown={(e) => {
+                if (touchCount < 2) {
+                    onMove(e)
+                    mouse.current.down = true
+                }
+            }}
             onPointerMove={onMove}
             onPointerUp={() => mouse.current.down = false}
             onPointerLeave={() => mouse.current.down = false}
